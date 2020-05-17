@@ -1,0 +1,209 @@
+<h1 class="text-center">- CRUD -</h1>
+<p class="text-center"><i><b>C</b>reate, <b>R</b>ead, <b>U</b>pdate, <b>D</b>elete</i></p>
+<div class="text-center">
+    <h3>Select wich operation you want to do:</h3>
+    <select name="operations" [(ngModel)]="Selected">
+        <option value="Create">Create</option>
+        <option value="Read">Read</option>
+        <option value="Update">Update</option>
+        <option value="Delete">Delete</option>
+    </select>
+    <br><br>
+    <button type="button" class="btn btn-success" (click)="Refresh()">Refresh</button>
+</div>
+
+<div class="text-center" *ngIf="Selected == 'Create'">
+    <br><br>
+    <h3>Create a new track:</h3>
+
+    <p>Title:</p>
+    <input type="text" placeholder="track title" required name="title" #title>
+
+    <p>Artist:</p>
+    <select [(ngModel)]='selectedArtist'>
+        <option value="{{artist.name}}" *ngFor='let artist of artists' #Artist>{{artist.name}}</option>
+    </select>
+    <br><br>
+    <p>Album:</p>
+    <input type="text" placeholder="track album" name="album" #Album>
+
+    <br><br>
+    <p>Genre:</p>
+    <input type="text" placeholder="Genre" name="genre" #Genre>
+
+    <br><br>
+    <p>Year:</p>
+    <input type="text" name="Year" placeholder="Release year" #Year>
+
+    <br><br>
+    <p>Bpm:</p>
+    <input type="text" name="BPM" placeholder="Tempo" #Bpm>
+
+    <br><br>
+    <p>Key:</p>
+    <input type="text" name="key" placeholder="key" #Key>
+
+    <br><br>
+    <button class="btn btn-success"
+        (click)="CreateTrack(title.value, Album.value, Genre.value, Year.value, Bpm.value, Key.value)">Add
+        to database</button>
+
+    <br><br><br>
+    <hr>
+    <h3>Create a new artist:</h3>
+    <p>Name:</p>
+    <input type="text" placeholder="artist name" required name="ArtistName" #ArtistName>
+    <br><br>
+    <p>Socials:</p>
+
+    <p *ngIf='!firstFieldCreated'>Create a field first!</p>
+    <form [formGroup]="myForm">
+        <div formArrayName="socials">
+            <div *ngFor="let artist of ArtistForms.controls; let i=index" [formGroupName]="i">
+
+                <input type="text" placeholder="URL" formControlName="url"> <button class="btn btn-danger"
+                    (click)="deleteURL(i)">Delete</button>
+            </div>
+        </div>
+
+    </form>
+    <button class="btn btn-primary" (click)="addField()">Add field</button>
+    <br><br>
+    <button class="btn btn-success" (click)="CreateArtist(ArtistName.value)">Add Artist to database</button>
+
+</div>
+
+<div class="text-center" *ngIf="Selected=='Read'">
+    <br><br>
+    <h5>Options:</h5>
+    <p>Search:</p>
+    <select [(ngModel)]="selectedSearch">
+        <option value="Title">Title</option>
+        <option value="Album">Album</option>
+        <option value="Key">Key</option>
+        <option value="BPM">BPM</option>
+    </select>
+    <input type="text" pInputText [(ngModel)]="SearchKeyWord" placeholder="keyword here" />
+    <br><br>
+    <button pButton type="button" label="Search" (click)="getTracksSearchResults()"></button>
+
+    <br><br>
+    <p>Edit the length and switch between pages:</p>
+    <input placeholder="page" [(ngModel)]="page">
+    <input placeholder="length" [(ngModel)]='length'>
+    <br><br>
+    <button pButton type="button" label="Apply" (click)="getPageTracks()"></button>
+    <br><br>
+    <p>Sorting:</p>
+    <p>Sort Type:</p>
+    <select [(ngModel)]="sortType">
+        <option value="Title">Title</option>
+        <option value="BPM">Bpm</option>
+    </select>
+
+    <p>Sort Method:</p>
+    <select [(ngModel)]="sortMethod">
+        <option value="asc">Ascending</option>
+        <option value="desc">Descending</option>
+    </select>
+    <br><br>
+    <button pButton type="button" label="Apply" (click)="sortResults()"></button>
+
+
+    <!-- Table -->
+    <br><br>
+    <table class="table table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Album</th>
+                <th scope="col">Genre</th>
+                <th scope="col">Year</th>
+                <th scope="col">BPM</th>
+                <th scope="col">Key</th>
+                <th scope="col">Artist</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let track of tracks">
+                <th scope="row">{{track.title}}</th>
+                <td>{{track.album}}</td>
+                <td>{{track.genre}}</td>
+                <td>{{track.year}}</td>
+                <td>{{track.bpm}}</td>
+                <td>{{track.key}}</td>
+                <td *ngFor="let tr of track.artists">{{tr.artist.name}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+</div>
+
+<div class="text-center" *ngIf="Selected=='Update'">
+    <br><br>
+    <!-- Table -->
+    <table class="table table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Album</th>
+                <th scope="col">Genre</th>
+                <th scope="col">Year</th>
+                <th scope="col">BPM</th>
+                <th scope="col">Key</th>
+                <th scope="col">Artist</th>
+                <th scope="col">Update</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let track of tracks">
+                <th scope="row"><input type="text" placeholder="{{track.title}}" required name="title" #title></th>
+                <td><input type="text" placeholder="{{track.album}}" name="album" #Album></td>
+                <td><input type="text" placeholder="{{track.genre}}" name="Genre" #Genre></td>
+                <td><input type="text" placeholder="{{track.year}}" name="Year" #Year></td>
+                <td><input type="text" placeholder="{{track.bpm}}" name="BPM" #BPM></td>
+                <td><input type="text" placeholder="{{track.key}}" name="Key" #Key></td>
+                <td *ngFor="let tr of track.artists"><input type="text" placeholder="{{tr.artist.name}}" name="Artist"
+                        #Artist></td>
+                <td><button type="button" class="btn btn-primary"
+                        (click)="Update(track, title.value , Album.value, Genre.value, Year.value,BPM.value,Key.value)">Update</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="text-center" *ngIf="Selected=='Delete'">
+    <!-- Table -->
+    <br><br>
+    <table class="table table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Album</th>
+                <th scope="col">Genre</th>
+                <th scope="col">Year</th>
+                <th scope="col">BPM</th>
+                <th scope="col">Key</th>
+                <th scope="col">Artist</th>
+                <th scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let track of tracks">
+                <th scope="row">{{track.title}}</th>
+                <td>{{track.album}}</td>
+                <td>{{track.genre}}</td>
+                <td>{{track.year}}</td>
+                <td>{{track.bpm}}</td>
+                <td>{{track.key}}</td>
+                <td *ngFor="let tr of track.artists">{{tr.artist.name}}</td>
+                <td><button type="button" class="btn btn-danger" (click)="deleteTrack(track)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<hr>

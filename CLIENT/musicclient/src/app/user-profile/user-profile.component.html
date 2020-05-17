@@ -1,0 +1,20 @@
+<div *ngIf="auth.user$ | async as user ;else login">
+
+    <!--{{user | json}}-->
+
+    <h1 class="text-center">You're logged in as: {{user.displayName}}!</h1>
+    <img src="{{user.photoURL}}" height="250px">
+
+    <hr>
+    <!--<button pButton class='button' (click)="auth.signOut()" label="Sign Out"></button>-->
+    <button type="button" (click)="auth.signOut()" class="btn btn-primary btn-lg btn-block">Sign Out</button>
+
+</div>
+
+<ng-template #login>
+    <h1 class="text-center">Login/Create an account:</h1>
+
+    <p class="text-center">Login, or create an account with Google</p>
+<!--<button pButton class="button" (click)="auth.googleSignin()" label="Login With Google" icon="pi pi-fw pi-google"></button>-->
+<button type="button" (click)="auth.googleSignin()" class="btn btn-primary btn-lg btn-block">Login With Google</button>
+</ng-template>

@@ -1,0 +1,70 @@
+<div *ngIf="auth.user$ | async as user ;else notLoggedIn">
+
+    <h1 class="text-left">Welcome {{user.displayName}}!</h1>
+    <p class="text-left">Logged in with email: {{user.email}}</p>
+    <br>
+    <hr>
+    <br>
+    <div *ngIf="!tracks">
+        <i class="pi pi-spin pi-spinner" style="font-size: 3em"></i>
+        <p>Loading...</p>
+    </div>
+
+
+    <div *ngIf="tracks">
+        <h3>Latest Tracks:</h3>
+
+
+        <tr class="list-group">
+            <th *ngFor="let track of tracks" class="list-group-item">
+                <div class="media"><img
+                        src="https://www.hardnews.nl/wp-content/uploads/2018/07/wouter-de-vink-64x64.jpg" alt="..."
+                        class="mr-3">
+                    <div class="media-body">
+                        <h5 class="mt-0">{{track.title}}</h5>
+                        <p>{{track.artists[0].artist.name}}</p>
+                        <p> {{track.key}} </p>
+                        <p>{{track.bpm}}BPM</p>
+                    </div>
+                </div>
+            </th>
+        </tr>
+    </div>
+
+
+    <div *ngIf="artists">
+        <h3>Latest Artists:</h3>
+
+
+        <tr class="list-group">
+            <th *ngFor="let artist of artists" class="list-group-item">
+                <div class="media">
+                    <div class="media-body">
+                        <th><h5 class="mt-0">{{artist.name}}</h5>
+                        <tr *ngFor='let social of artist.socials'><a href="{{social.url}}">Link </a></tr>
+                        <tr *ngFor='let track of artist.tracks'><p>{{track.title}}</p></tr>
+                    </th>
+                    </div>
+                </div>
+            </th>
+        </tr>
+    </div>
+
+</div>
+
+<ng-template #notLoggedIn>
+    <h1 class="text-center">You're not logged in, go to the login page to login.</h1>
+    <p class="text-center">To see the data from the database, please log in</p>
+    <img src="https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fmedia.tumblr.com%2Ftumblr_m3s8quWvws1r0adt2.gif&f=1&nofb=1" alt="crying gif" class="center">
+    
+    <p-fieldset legend="Joke" [toggleable]="true">
+        <p *ngIf="!joke">Do you want to hear a joke? click that button right there!</p>
+        <div *ngIf="joke">
+            <img src="{{joke.icon_url}}" alt="jokeimage">
+            <p>{{joke.value}}</p>
+        </div>
+        <br>
+        <button pButton type="button" class="ui-button-raised ui-button-rounded" (click)="showJoke()" label="Make me laugh!"></button>
+
+    </p-fieldset>
+</ng-template>
