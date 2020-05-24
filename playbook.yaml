@@ -1,0 +1,111 @@
+---
+    - hosts: all
+      remote_user: root
+      become_method: sudo
+      become_user: root
+      tasks:
+      - name: updaten van machines
+        apt:
+            name: '*'
+            state: latest
+
+      - name: Installeren Git
+        apt:
+          name: git
+          state: latest
+      
+      - name: Installeren nodejs
+        apt:
+          name: nodejs
+          state: latest
+
+      - name: installeren npm
+        apt:
+          name: npm
+          state: latest
+      
+      - name: Installeren Dotnet SDK 3.1
+        command:
+          cmd: wget https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+      
+      - name: Installeren van package packages-microsoft-prod.deb
+        command:
+          cmd: dpkg -i packages-microsoft-prod.deb
+    
+      - name: installeren van ASP.NET core runtime
+        command:
+          cmd: add-apt-repository universe 
+
+      - name: get update
+        apt:
+          name: '*'
+          state: latest
+      
+      - name: install apt-transport-https
+        apt:
+          name: apt-transport-https
+          state: latest
+
+      - name: get update
+        apt:
+          name: '*'
+          state: latest
+        
+      - name: install dotnet-sdk
+        apt:
+          name: dotnet-sdk-3.1
+          state: latest
+
+      # - name: install sql server
+      #   command:
+      #     cmd: wget -qO- https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+
+      # - name: register ms sql server repo
+      #   command:
+      #     cmd: add-apt-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/18.04/mssql-server-2019.list)"
+
+      # - name: get update
+      #   apt:
+      #     name: '*'
+      #     state: latest
+
+      # - name: install mssql
+      #   apt:
+      #     name: mssql-server
+      #     state: latest
+
+      #Downloaden van file
+      - name: checken als folder bestaat
+        stat: path=/home/ansible/cloudapis
+        register: stat_result
+      
+      - name: remove folder
+        file:
+          path: /home/ansible/cloudapis
+          state: absent
+          #when: stat_result.stat.exists
+      
+      - name: download repo van github
+        command:
+          cmd:  git clone https://github.com/MaximeMnt/DevOps-Eindproject.git /home/ansible/cloudapis
+
+      - name: dotnet restore
+        command:
+          cmd: dotnet restore /home/ansible/cloudapis/RESTful-API-MaximeMinta-v2
+
+      - name: dotnet build
+        command:
+          cmd: dotnet build /home/ansible/cloudapis/RESTful-API-MaximeMinta-v2
+
+      #Hier nog deployen dan :(
+
+      - name: dotnet run
+        command:
+          cmd: dotnet run /home/ansible/cloudapis/RESTful-API-MaximeMinta-v2/RESTful API MaximeMinta-v2
+
+
+          
+      #Apache
+          
+
+
