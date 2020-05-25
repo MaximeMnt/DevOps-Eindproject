@@ -144,13 +144,11 @@
       - name: verplaatsten van angular files
         command: mv /home/ansible/cloudapis/CLIENT/musicclient/dist/musicclient /var/www/html
 
-      - name: verwijderen van html directory
-        file: 
-          path: /var/www/html
-          state: absent
+      # - name: verwijderen van html directory
+      #   file: 
+      #     path: /var/www/html
+      #     state: absent
 
-      - name: hernoemen van musicclient map
-        command: mv /var/www/musicclient /var/www/html
 
       - name: starten van apache2
         command: systemctl start apache2
