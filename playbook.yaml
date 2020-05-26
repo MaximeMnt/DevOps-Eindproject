@@ -14,19 +14,39 @@
           name: git
           state: latest
       
+      - name: installeren docker
+        apt:
+          name: docker.io
+          state: latest
+      
       # - name: install Curl
       #   apt:
       #     name: curl
       #     state: latest
 
-      # - name: download nodejs
-      #   command:
-      #     cmd: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash
+      - name: download nodejs
+        get_url:
+          url: "https://deb.nodesource.com/setup_12.x"
+          dest: "/root/.ansible/installnodejs"
       
-      # - name: Installeren nodejs
-      #   apt:
-      #     name: nodejs
-      #     state: present
+      - name: instellen van permissions
+        command:
+          cmd: chmod u+x /root/.ansible/installnodejs
+
+      - name: uitvoeren van script
+        shell: /root/.ansible/installnodejs
+
+
+      - name: install nodejs
+        apt:
+          name: nodejs
+          state: present
+          update_cache: yes
+
+      - name: rmv script
+        file:
+          path: /root/.ansible/installnodejs
+          state: absent
 
       # - name: installeren npm
       #   apt:
@@ -112,6 +132,18 @@
 
         #TODO: DOTNET builden, sql server installeren, dotnet deployen met sql server
 
+
+#-----------------VERWIJDEREN------------------------------------
+      # - name: Create db container and connect to network
+      #   docker_container:
+      #     name: SongLibraryDB
+      #     image: "mysql:latest"
+      #     networks:
+      #       - name: TestingNet
+      #         ipv4_address: "172.1.1.100"
+      #         aliases:
+      #           - database
+#-----------------VERWIJDEREN------------------------------------
       #CLIENT APPLICATIE
 
       #---------------------------TEMP-----------------------------------------
@@ -140,6 +172,10 @@
       - name: stoppen van apache
         command: systemctl stop apache2
       
+      - name: verwijderen van html directory
+        file: 
+          path: /var/www/html
+          state: absent
 
       - name: verplaatsten van angular files
         command: mv /home/ansible/cloudapis/CLIENT/musicclient/dist/musicclient /var/www/html
@@ -152,6 +188,8 @@
 
       - name: starten van apache2
         command: systemctl start apache2
+
+      
           
 
 
