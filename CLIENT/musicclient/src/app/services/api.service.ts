@@ -10,7 +10,7 @@ export class ApiService {
 
 	//CREATE -- INSERT
 	createTrack(track) {
-		return this.http.post<ITrack>('http://localhost:6123/api/tracks', track, {
+		return this.http.post<ITrack>('https://cloudapis-eindproject.ew.r.appspot.com/api/tracks/', track, {
 			headers: new HttpHeaders({
 				"Content-Type": "application/json",
 			}),
@@ -18,46 +18,62 @@ export class ApiService {
 	}
 
 	createArtist(Artist) {
-		return this.http.post<IArtist>('http://localhost:6123/api/artists', Artist);
+		return this.http.post<IArtist>('https://cloudapis-eindproject.ew.r.appspot.com/api/artists/', Artist);
 	}
 
 	//READ
 	getTracks() {
-		return this.http.get<ITrack>('http://localhost:6123/api/tracks');
+		return this.http.get<ITrack>('https://cloudapis-eindproject.ew.r.appspot.com/api/tracks');
 	}
 
 	getTracksPage(page: number, length: number = 5) {
-		return this.http.get<ITrack>('http://localhost:6123/api/tracks?page=' + page + '&length=' + length);
+		return this.http.get<ITrack>('https://cloudapis-eindproject.ew.r.appspot.com/api/tracks?page=' + page + '&length=' + length);
 
 	}
 
 	getArtists() {
-		return this.http.get<IArtist>('http://localhost:6123/api/artists');
+		return this.http.get<IArtist>('https://cloudapis-eindproject.ew.r.appspot.com/api/artists');
 	}
 
 	SearchTracks(type: string, search: any) {
-		return this.http.get<ITrack>('http://localhost:6123/api/tracks?' + type + '=' + search);
+		return this.http.get<ITrack>('https://cloudapis-eindproject.ew.r.appspot.com/api/tracks?' + type + '=' + search);
 	}
 
 	SortTracks(type: string, dir: string) {
-		return this.http.get<ITrack>('http://localhost:6123/api/tracks?sort=' + type + '&dir=' + dir);
+		return this.http.get<ITrack>('https://cloudapis-eindproject.ew.r.appspot.com/api/tracks?sort=' + type + '&dir=' + dir);
 	}
 
 
 	//DELETE
 	deleteTrack(track: ITrack) {
-		return this.http.delete<ITrack>('http://localhost:6123/api/tracks/' + track.trackID);
+		return this.http.delete<ITrack>('https://cloudapis-eindproject.ew.r.appspot.com/api/tracks/' + track.trackID);
 	}
+
+	deleteArtist(artist: IArtist){
+		return this.http.delete<IArtist>('https://cloudapis-eindproject.ew.r.appspot.com/api/artists/' + artist.artistID);
+	}
+
+	deleteSocials(id: number){
+		return this.http.delete<any>('https://cloudapis-eindproject.ew.r.appspot.com/api/URLs/' + id)
+	}
+
 
 	//Update
 	UpdateTrack(track: ITrack, body) {
-		console.log('wordt uitgevoerd')
-		return this.http.put<ITrack>('http://localhost:6123/api/tracks/' + track.trackID, body, {
+		return this.http.put<ITrack>('https://cloudapis-eindproject.ew.r.appspot.com/api/tracks/' + track.trackID, body, {
 			headers: new HttpHeaders({
 				"Content-Type": "application/json",
 			}),
 		}
 		);
+	}
+
+	UpdateArtist(artist: IArtist, body){
+		return this.http.put<IArtist>('https://cloudapis-eindproject.ew.r.appspot.com/api/artists/' + artist.artistID, body, {
+			headers: new HttpHeaders({
+				"Content-Type": "application/json"
+			}),
+		});
 	}
 
 

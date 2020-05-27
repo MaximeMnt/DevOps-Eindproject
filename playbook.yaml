@@ -130,8 +130,27 @@
       #   command:
       #     cmd: dotnet run /home/ansible/cloudapis/RESTful-API-MaximeMinta-v2/RESTful API MaximeMinta-v2
 
-        #TODO: DOTNET builden, sql server installeren, dotnet deployen met sql server
+        #-----------TODO: DOTNET builden, sql server installeren, dotnet deployen met sql server---------------
 
+      # - name: uitvoeren van dockerfile
+      # https://www.youtube.com/watch?v=lqEnooL0BkI
+
+      - name: installeren sql server
+        apt:
+          name: mysql-server
+          state: latest
+      
+      - name: allow remote access
+        command:
+          cmd: ufw allow mysql
+      
+      - name: start mysql
+        command:
+          cmd: systemctl start mysql
+
+      - name: launch at reboot
+        command:
+          cmd: systemctl enable mysql
 
 #-----------------VERWIJDEREN------------------------------------
       # - name: Create db container and connect to network
@@ -147,11 +166,11 @@
       #CLIENT APPLICATIE
 
       #---------------------------TEMP-----------------------------------------
-      # - name: installeren van angular cli
-      #   npm:
-      #     name: angular-cli
-      #     global: yes
-      #     version: latest  
+      - name: installeren van angular cli
+        npm:
+          name: angular-cli
+          global: yes
+          version: latest  
       
       
       - name: installeren van packages in package.json

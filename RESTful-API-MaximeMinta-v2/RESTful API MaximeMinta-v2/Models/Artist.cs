@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 
 namespace RESTful_API_MaximeMinta_v2
 {
-    //[DataContract]
     public class Artist
     {
         [Key]
@@ -24,7 +23,6 @@ namespace RESTful_API_MaximeMinta_v2
         [Url]
         public ICollection<URL> Socials { get; set; }
 
-        //[DataMember]
         [JsonIgnore]
         public ICollection<TrackArtist> Tracks { get; set; }
 

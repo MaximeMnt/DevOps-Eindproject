@@ -82,10 +82,24 @@ namespace RESTful_API_MaximeMinta_v2
         [HttpPost]
         public IActionResult CreateTrack([FromBody] Track newTrack)
         {
-            //Track toevoegen
-            library.Tracks.Add(newTrack);
-            library.SaveChanges(); //opslaan
-            return Created("", newTrack); //stuur een result 201 terug met het boek als content
+            try
+            {
+                if (newTrack == null)
+                {
+                    return BadRequest();
+                }
+                //Track toevoegen
+                library.Tracks.Add(newTrack);
+                library.SaveChanges(); //opslaan
+                return Created("", newTrack); //stuur een result 201 terug met het item als content
+            }
+            catch (Exception)
+            {
+
+                return BadRequest();
+            }
+
+            
         }
 
 
@@ -129,6 +143,7 @@ namespace RESTful_API_MaximeMinta_v2
             {
                 return BadRequest();
             }
+            
             //TODO controleren op megeven van track
             var originalTrack = library.Tracks.Find(id);
             if (originalTrack == null)
@@ -143,7 +158,21 @@ namespace RESTful_API_MaximeMinta_v2
                 originalTrack.Genre = UpdateTrack.Genre;
                 originalTrack.Key = UpdateTrack.Key;
                 originalTrack.Year = UpdateTrack.Year;
-                originalTrack.Artists = UpdateTrack.Artists;
+                //als een item in de array geen naam bevat, stuur dan een 400 terug.
+                if (UpdateTrack.Artists != null)
+                {
+                    foreach (var item in UpdateTrack.Artists)
+                    {
+                        if (item.Artist.Name == null)
+                        {
+                            return BadRequest();
+                        }
+                    }
+
+                    originalTrack.Artists = UpdateTrack.Artists;
+                }
+
+                
 
                 library.SaveChanges();
                 return Ok(originalTrack);

@@ -17,7 +17,6 @@ namespace RESTful_API_MaximeMinta_v2
         public int ArtistID { get; set; }
         [DataMember]
         public Artist Artist { get; set; }
-        //public ICollection<Artist> Artist { get; set; }
 
     }
 }

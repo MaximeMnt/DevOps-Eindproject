@@ -17,12 +17,12 @@
 
         <tr class="list-group">
             <th *ngFor="let track of tracks" class="list-group-item">
-                <div class="media"><img
+                <div class="media" *ngIf="track"><img
                         src="https://www.hardnews.nl/wp-content/uploads/2018/07/wouter-de-vink-64x64.jpg" alt="..."
                         class="mr-3">
                     <div class="media-body">
                         <h5 class="mt-0">{{track.title}}</h5>
-                        <p>{{track.artists[0].artist.name}}</p>
+                        <p *ngFor="let artist of track.artists">{{artist.artist.name}}</p>
                         <p> {{track.key}} </p>
                         <p>{{track.bpm}}BPM</p>
                     </div>
@@ -41,9 +41,9 @@
                 <div class="media">
                     <div class="media-body">
                         <th><h5 class="mt-0">{{artist.name}}</h5>
-                        <tr *ngFor='let social of artist.socials'><a href="{{social.url}}">Link </a></tr>
+                        <tr *ngFor='let social of artist.socials'><a href="{{social.url}}" target="blank">Link </a></tr>
                         <tr *ngFor='let track of artist.tracks'><p>{{track.title}}</p></tr>
-                    </th>
+                    </th>                       
                     </div>
                 </div>
             </th>

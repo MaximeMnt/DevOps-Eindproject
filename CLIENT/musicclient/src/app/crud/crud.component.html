@@ -1,5 +1,7 @@
 <h1 class="text-center">- CRUD -</h1>
 <p class="text-center"><i><b>C</b>reate, <b>R</b>ead, <b>U</b>pdate, <b>D</b>elete</i></p>
+<div *ngIf="auth.user$ | async as user ;else notLoggedIn">
+
 <div class="text-center">
     <h3>Select wich operation you want to do:</h3>
     <select name="operations" [(ngModel)]="Selected">
@@ -132,7 +134,7 @@
                 <td>{{track.year}}</td>
                 <td>{{track.bpm}}</td>
                 <td>{{track.key}}</td>
-                <td *ngFor="let tr of track.artists">{{tr.artist.name}}</td>
+                <td><p *ngFor="let tr of track.artists">{{tr.artist.name}}</p></td>
             </tr>
         </tbody>
     </table>
@@ -143,6 +145,8 @@
 
 <div class="text-center" *ngIf="Selected=='Update'">
     <br><br>
+
+    <p>Note: the artist field will add an artist, not change the current artist.</p>
     <!-- Table -->
     <table class="table table-hover">
         <thead class="thead-light">
@@ -165,8 +169,9 @@
                 <td><input type="text" placeholder="{{track.year}}" name="Year" #Year></td>
                 <td><input type="text" placeholder="{{track.bpm}}" name="BPM" #BPM></td>
                 <td><input type="text" placeholder="{{track.key}}" name="Key" #Key></td>
-                <td *ngFor="let tr of track.artists"><input type="text" placeholder="{{tr.artist.name}}" name="Artist"
-                        #Artist></td>
+                <td>
+                    <p *ngFor="let tr of track.artists">{{tr.artist.name}}</p> <br>
+                </td>
                 <td><button type="button" class="btn btn-primary"
                         (click)="Update(track, title.value , Album.value, Genre.value, Year.value,BPM.value,Key.value)">Update</button>
                 </td>
@@ -199,11 +204,40 @@
                 <td>{{track.year}}</td>
                 <td>{{track.bpm}}</td>
                 <td>{{track.key}}</td>
-                <td *ngFor="let tr of track.artists">{{tr.artist.name}}</td>
+                <td><p *ngFor="let tr of track.artists">{{tr.artist.name}}</p></td>
                 <td><button type="button" class="btn btn-danger" (click)="deleteTrack(track)">Delete</button>
                 </td>
             </tr>
         </tbody>
     </table>
+
+
+    <br><br>
+    <table class="table table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col" id="socials">Socials</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let artist of artists">
+                <th scope="row">{{artist.name}}</th>
+                <td>
+                    <p *ngFor="let a of artist.socials"><a href="{{a.url}}" target="blank">{{a.url}}</a><br></p>
+                </td>
+                 <td *ngFor="let tr of artist.artists">{{tr.artist.name}}</td>
+                 <td><button type="button" class="btn btn-danger" (click)="deleteArtist(artist)">Delete</button>
+                </td>
+            </tr>
+       </tbody>
+    </table>
 </div>
 <hr>
+</div>
+
+<ng-template #notLoggedIn>
+    <h1 class="text-center">You're not logged in, go to the login page to login.</h1>
+    <p class="text-center">To see the data from the database, please log in</p>
+</ng-template>

@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService, IArtist, ITrack } from '../services/api.service';
 import { FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { interval } from 'rxjs';
+import { SubjectSubscriber } from 'rxjs/internal/Subject';
+import { delay } from 'rxjs/operators';
+import { AuthService } from '../services/auth.service';
 
 
 @Component({
@@ -17,7 +20,7 @@ export class CRUDComponent implements OnInit {
   myForm: FormGroup;
   selectedArtist: any;
 
-  constructor(public api: ApiService, private fb: FormBuilder) {
+  constructor(public api: ApiService, private fb: FormBuilder, public auth: AuthService) {
     this.getArtists();
     this.getTracks();
     // interval(2000).subscribe(x => {
@@ -55,12 +58,6 @@ export class CRUDComponent implements OnInit {
   }
 
   CreateTrack(title, album, genre, year, bpm, key) {
-    console.log("title " + title);
-    console.log("a " + album);
-    console.log("g " + genre);
-    console.log("y " + year);
-    console.log("b " + bpm);
-    console.log("k " + key);
     console.log(this.selectedArtist);
 
     var body = {
@@ -76,7 +73,7 @@ export class CRUDComponent implements OnInit {
       // }]
     }
 
-    this.api.createTrack(body).subscribe(success =>{
+    this.api.createTrack(body).subscribe(success => {
       console.log(success);
     });
     console.log(JSON.stringify(body));
@@ -109,34 +106,12 @@ export class CRUDComponent implements OnInit {
   CreateArtist(Artistname) {
     var body = {
       name: Artistname,
-      socials: [{
-        url: null
-      }]
+      socials: this.ArtistForms.value
     }
-    body.socials.pop();
-    body.socials.push(this.ArtistForms.value);
 
-
-
-    this.api.createArtist(body).subscribe(track =>{
+    this.api.createArtist(body).subscribe(track => {
       console.log(track);
     });
-    console.log(JSON.stringify(body));
-
-
-    //   {
-
-    //     name: "TEST",
-    //     socials: [
-    //         {
-    //             url: "https://test.org"
-    //         },
-    //         {
-    //             url: "https://test.com"
-    //         }
-    //     ]
-    // }
-
   }
 
   // --END CREATE--
@@ -188,56 +163,94 @@ export class CRUDComponent implements OnInit {
     });
   }
 
+  deleteArtist(artist: IArtist) {
+    if (artist.socials.length == 0) {
+      this.api.deleteArtist(artist).subscribe(artists => {
+        this.artists = artists;
+      });
+    } else {
+      artist.socials.forEach(element => {
+        this.api.deleteSocials(element.urlID).subscribe(blabla =>{
+          console.log(blabla);
+        });
+      });
+
+      setTimeout(fucntion => {
+        this.api.deleteArtist(artist).subscribe(artists =>{
+          this.artists = artists;
+        })
+      },250);
+      
+    }
+
+
+
+
+
+  }
+
   public Refresh() {
     this.getTracks();
     this.getArtists();
   }
 
+  updateArtist: string = "";
   Update(track, title, Album, Genre, Year, BPM, Key) {
+    let finTitle, finAlbum, finGenre, finYear, finBPM, finKey, finArtist;
 
-    let finTitle, finAlbum, finGenre, finYear, finBPM, finKey;
-
-    if(!title){
+    if (!title) {
       finTitle = track.title;
     } else finTitle = title;
 
-    if(!Album){
+    if (!Album) {
       finAlbum = track.album;
     } else finAlbum = Album;
 
-    if(!Genre){
+    if (!Genre) {
       finGenre = track.genre;
     } else finGenre = Genre;
 
-    if(!Year){
+    if (!Year) {
       finYear = track.year;
     } else finYear = Year;
 
-    if(!BPM){
+    if (!BPM) {
       finBPM = track.bpm
     } else finBPM = BPM;
 
-    if(!Key){
+    if (!Key) {
       finKey = track.key
     } else finKey = Key;
 
-
     var body = {
-
 
       title: finTitle,
       album: finAlbum,
       genre: finGenre,
       year: finYear,
       bpm: finBPM,
-      key: finKey
+      key: finKey,
+      // artists: [
+      //   {
+      //     artist: {
+      //       name: finArtist
+      //     }
+      //   }
+      // ]
 
     };
-    console.log(track.trackID);
-    console.log(body);
-    this.api.UpdateTrack(track, body).subscribe(success =>{
+    // var artistBody = {
+    //   name: finArtist,
+    //   //socials: track.artist.socials,
+    //   //tracks: track.artist.tracks
+    // }
+    this.api.UpdateTrack(track, body).subscribe(success => {
       console.log(success);
     });
+    // this.api.UpdateArtist(track.artist, body).subscribe(success => {
+    //   console.log(success);
+    // });
+
   }
 }
 

@@ -15,9 +15,12 @@ export class HomepageComponent implements OnInit {
 
 
   constructor(public auth: AuthService, public api: ApiService) {
-      interval(2000).subscribe(x => {
+    interval(2000).subscribe(x => {
+      // if (auth.user$ != null) {
+        // console.log("true")
         this.refreshData();
-      });
+      // }
+    });
   }
   public tracks: ITrack;
   public artists: IArtist;
@@ -25,7 +28,7 @@ export class HomepageComponent implements OnInit {
   ngOnInit() {
   }
 
-  refreshData(){
+  refreshData() {
     this.getTracks();
     this.getArtists();
   }
@@ -39,13 +42,13 @@ export class HomepageComponent implements OnInit {
     })
   }
 
-  getArtists(){
-    this.api.getArtists().subscribe(artists=>{
+  getArtists() {
+    this.api.getArtists().subscribe(artists => {
       this.artists = artists;
     })
   }
 
-  showJoke(){
+  showJoke() {
     this.api.getChuckNorris().subscribe(joke => {
       this.joke = joke;
     })

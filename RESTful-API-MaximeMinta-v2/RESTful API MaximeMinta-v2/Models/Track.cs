@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 namespace RESTful_API_MaximeMinta_v2
 {
-    //[DataContract]
     public class Track
     {
         [Key]
@@ -21,11 +20,9 @@ namespace RESTful_API_MaximeMinta_v2
         [Required]
         [StringLength(100)]
         public string Title { get; set; }
-        //public string ArtistName { get; set; } //zou vreemde sleutel moeten zijn
         [StringLength(300)]
         public string Album { get; set; }
         public string Genre { get; set; }
-        //public string FeaturingArtists { get; set; }
 
         [Range(1500,int.MaxValue)]
         public int Year { get; set; }
@@ -36,7 +33,7 @@ namespace RESTful_API_MaximeMinta_v2
 
         [Required]
         public string Key { get; set; }
-        //[DataMember]
+
         [JsonIgnore]
         public ICollection<TrackArtist> Artists { get; set; }
     }

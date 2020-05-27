@@ -31,13 +31,12 @@ namespace RESTful_API_MaximeMinta_v2
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.Authority = "https://securetoken.google.com/cloudapis-eindproject";
-                options.Audience = "cloudapis-eindproject"; //diegene waarvoor het token bestemt is.
+                options.Audience = "cloudapis-eindproject";
                 
             });
 
             services.AddDbContext<SongLibraryDbContext>(
-                    options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")
-                    )
+                    options => options.UseMySQL(Configuration.GetConnectionString("DefaultConnection"))                    
                 );
             services.AddControllers()
              .AddNewtonsoftJson(options =>
