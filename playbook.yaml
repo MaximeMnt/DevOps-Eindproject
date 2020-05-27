@@ -30,8 +30,9 @@
           dest: "/root/.ansible/installnodejs"
       
       - name: instellen van permissions
-        command:
-          cmd: chmod u+x /root/.ansible/installnodejs
+        file:
+          path: /root/.ansible/installnodejs
+          mode: u+x
 
       - name: uitvoeren van script
         shell: /root/.ansible/installnodejs
@@ -104,53 +105,66 @@
       #     state: latest
  #◘-----------TEMP-----------
       #Downloaden van file
-      # - name: checken als folder bestaat
-      #   stat: path=/home/ansible/cloudapis
-      #   register: stat_result
+      - name: checken als folder bestaat
+        stat: path=/home/ansible/cloudapis
+        register: stat_result
       
-      # - name: remove folder
-      #   file:
-      #     path: /home/ansible/cloudapis
-      #     state: absent
+      - name: remove folder
+        file:
+          path: /home/ansible/cloudapis
+          state: absent
           #when: stat_result.stat.exists
      
-      # - name: download repo van github
-      #   command:
-      #     cmd:  git clone https://github.com/MaximeMnt/DevOps-Eindproject.git /home/ansible/cloudapis
+      - name: download repo van github
+        command:
+          cmd:  git clone https://github.com/MaximeMnt/DevOps-Eindproject.git /home/ansible/cloudapis
 
-      # - name: dotnet restore
-      #   command:
-      #     cmd: dotnet restore /home/ansible/cloudapis/RESTful-API-MaximeMinta-v2
+      - name: dotnet restore
+        command:
+          cmd: dotnet restore /home/ansible/cloudapis/RESTful-API-MaximeMinta-v2
 
-      # - name: dotnet build
-      #   command:
-      #     cmd: dotnet build /home/ansible/cloudapis/RESTful-API-MaximeMinta-v2
+      - name: dotnet build
+        command:
+          cmd: dotnet build /home/ansible/cloudapis/RESTful-API-MaximeMinta-v2
 #◘-----------TEMP-----------
       # - name: dotnet run
       #   command:
-      #     cmd: dotnet run /home/ansible/cloudapis/RESTful-API-MaximeMinta-v2/RESTful API MaximeMinta-v2
+      #     cmd: dotnet run --project /home/ansible/cloudapis/RESTful-API-MaximeMinta-v2/RESTful API MaximeMinta-v2
+
+      - name: installeren screen
+        apt:
+          name: screen
+          state: latest
+      
+      - name: installen permissions
+        file:
+          path: /home/ansible/cloudapis/dotnetRun.sh
+          mode: u+x
+
+      - name: dotnet run
+        shell: /home/ansible/cloudapis/dotnetRun.sh
+        
+
 
         #-----------TODO: DOTNET builden, sql server installeren, dotnet deployen met sql server---------------
 
-      # - name: uitvoeren van dockerfile
-      # https://www.youtube.com/watch?v=lqEnooL0BkI
 
-      - name: installeren sql server
-        apt:
-          name: mysql-server
-          state: latest
+      # - name: installeren sql server
+      #   apt:
+      #     name: mysql-server
+      #     state: latest
       
-      - name: allow remote access
-        command:
-          cmd: ufw allow mysql
+      # - name: allow remote access
+      #   command:
+      #     cmd: ufw allow mysql
       
-      - name: start mysql
-        command:
-          cmd: systemctl start mysql
+      # - name: start mysql
+      #   command:
+      #     cmd: systemctl start mysql
 
-      - name: launch at reboot
-        command:
-          cmd: systemctl enable mysql
+      # - name: launch at reboot
+      #   command:
+      #     cmd: systemctl enable mysql
 
 #-----------------VERWIJDEREN------------------------------------
       # - name: Create db container and connect to network
@@ -166,11 +180,11 @@
       #CLIENT APPLICATIE
 
       #---------------------------TEMP-----------------------------------------
-      - name: installeren van angular cli
-        npm:
-          name: angular-cli
-          global: yes
-          version: latest  
+      # - name: installeren van angular cli
+      #   npm:
+      #     name: angular-cli
+      #     global: yes
+      #     version: latest  
       
       
       - name: installeren van packages in package.json
@@ -197,7 +211,7 @@
           state: absent
 
       - name: verplaatsten van angular files
-        command: mv /home/ansible/cloudapis/CLIENT/musicclient/dist/musicclient /var/www/html
+        command: mv /home/ansible/cloudapis/CLIENT/musicclient/dist/ /var/www/html
 
       # - name: verwijderen van html directory
       #   file: 
