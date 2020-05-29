@@ -121,6 +121,10 @@
       #     global: yes
       #     version: latest  
 
+      - name: install angular cli
+        command:
+          cmd: npm install -g @angular/cli
+      
       - name: installeren van packages in package.json
         npm:
           path: /home/ansible/cloudapis/CLIENT/musicclient
